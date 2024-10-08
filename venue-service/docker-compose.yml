@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  venue-db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: venuedb
+    ports:
+      - "5432:5432"
+    volumes:
+      - venue-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  venue-service:
+    build: .
+    ports:
+      - "8082:8082"
+    depends_on:
+      venue-db:
+        condition: service_healthy
+    command: ["sh", "-c", "until pg_isready -h venue-db -U postgres; do sleep 1; done; psql -h venue-db -U postgres -d venuedb -c 'CREATE TABLE IF NOT EXISTS venues (id SERIAL PRIMARY KEY, name VARCHAR(100), location VARCHAR(100), description TEXT);'; ./venue-service"]
+
+volumes:
+  venue-db-data:

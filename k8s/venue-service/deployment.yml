@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: venue-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: venue-service
+  template:
+    metadata:
+      labels:
+        app: venue-service
+    spec:
+      containers:
+      - name: venue-service
+        image: your-docker-repo/venue-service:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: KAFKA_BROKER
+          value: "kafka:9092"

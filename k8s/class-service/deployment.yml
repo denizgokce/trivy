@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: class-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: class-service
+  template:
+    metadata:
+      labels:
+        app: class-service
+    spec:
+      containers:
+      - name: class-service
+        image: your-docker-repo/class-service:latest
+        ports:
+        - containerPort: 8083
+        env:
+        - name: KAFKA_BROKER
+          value: "kafka:9092"

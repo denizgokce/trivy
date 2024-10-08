@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+      - name: booking-service
+        image: your-docker-repo/booking-service:latest
+        ports:
+        - containerPort: 8084
+        env:
+        - name: KAFKA_BROKER
+          value: "kafka:9092"
